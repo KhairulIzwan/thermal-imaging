@@ -34,7 +34,7 @@ class preview_node:
 
 		# Subscribe to the raw camera image topic
 		self.imgRaw_sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", 
-				CompressedImage, self.callback, queue_size=1)
+				CompressedImage, self.callback, queue_size=10)
 
 	def callback(self,data):
 		# Convert the raw image to OpenCV format
