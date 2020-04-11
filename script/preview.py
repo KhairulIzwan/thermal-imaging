@@ -44,7 +44,7 @@ class preview_node:
 		self.getCameraInfo()
 
 		# Overlay some text onto the image display
-		self.textInfo()
+		#self.textInfo()
 
 		# Refresh the image on the screen
 		self.displayImg()
