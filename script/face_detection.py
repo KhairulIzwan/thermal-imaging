@@ -55,11 +55,11 @@ class FaceDetector:
 		# Overlay some text onto the image display
 		#self.textInfo()
 
-		# Refresh the image on the screen
-		self.displayImg()
-
 		# Detect face
 		self.track()
+
+		# Refresh the image on the screen
+		self.displayImg()
 
 		# Publish ROI
 		self.publishROI()
