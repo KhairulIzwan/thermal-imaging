@@ -37,7 +37,7 @@ class FaceDetector:
 		self.pub = rospy.Publisher("/roi", RegionOfInterest, queue_size=10)
 
 		# Path to input Haar cascade for face detection
-		self.faceCascade = cv2.CascadeClassifier("/home/khairulizwan/catkin_ws/src/thermal-imaging/library/haarcascade_frontalface_default.xml")
+		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library/haarcascade_frontalface_default.xml")
 		
 	# Get the width and height of the image
 	def getCameraInfo(self):
@@ -55,17 +55,17 @@ class FaceDetector:
 		# Detect face
 		self.track()
 
-		# loop over the face bounding boxes and draw them
-		for rect in self.rects:
-			cv2.rectangle(self.frameClone, (rect[0], rect[1]), (rect[2], rect[3]), (0, 255, 0), 2)
+#		# loop over the face bounding boxes and draw them
+#		for rect in self.rects:
+#			cv2.rectangle(self.frameClone, (rect[0], rect[1]), (rect[2], rect[3]), (0, 255, 0), 2)
 
-			roi=RegionOfInterest()
-			roi.x_offset=rect[0]
-			roi.y_offset=rect[1]
-			roi.width=rect[2]
-			roi.height=rect[3]
+#			roi=RegionOfInterest()
+#			roi.x_offset=rect[0]
+#			roi.y_offset=rect[1]
+#			roi.width=rect[2]
+#			roi.height=rect[3]
 
-			self.pub.publish(roi)
+#			self.pub.publish(roi)
 
 		# Refresh the image on the screen
 		self.displayImg()
