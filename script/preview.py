@@ -54,7 +54,7 @@ class Preview:
 		self.image_width = rospy.get_param("/raspicam_node_robot/width") 
 		self.image_height = rospy.get_param("/raspicam_node_robot/height") 
 		rospy.set_param("/raspicam_node_robot/brightness", 1000)
-		rospy.set_param("/raspicam_node_robot/hFlip", 1)
+		rospy.set_param("/raspicam_node_robot/vFlip", 1)
 
 	# Convert the raw image to OpenCV format
 	def cvtImage(self, data):
