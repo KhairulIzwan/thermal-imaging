@@ -11,9 +11,6 @@
 		<param name="width" value="160" />
 		<param name="height" value="120" />
 		<param name="quality" value="100" />
-		<param name="enable_imv" value="0" />
-		<param name="enable_raw" value="1" />
-		<param name="hFlip" value="1" />
 
 	</node>
 
