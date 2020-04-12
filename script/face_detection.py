@@ -115,7 +115,7 @@ class FaceDetector:
 
 	def shutdown(self):
 		try:
-			rospy.loginfo("[INFO] Tank Face Detector [OFFLINE]")
+			rospy.loginfo("[INFO] Face Detector [OFFLINE]")
 		finally:
 			cv2.destroyAllWindows()
 
@@ -124,10 +124,10 @@ def main(args):
 	try:
 		rospy.spin()
 	except ROSInterruptException:
-		rospy.loginfo("[INFO] Tank Face Detector [OFFLINE]")
+		rospy.loginfo("[INFO] Face Detector [OFFLINE]")
 
 	cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-	rospy.loginfo("[INFO] Tank Face Detector [ONLINE]")
+	rospy.loginfo("[INFO] Face Detector [ONLINE]")
 	main(sys.argv)

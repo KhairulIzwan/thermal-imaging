@@ -18,11 +18,11 @@ import numpy as np
 
 import cv2
 
-class preview_node:
+class PreviewNode:
 	def __init__(self):
 
 		# Initializing your ROS Node
-		rospy.init_node('preview_node', anonymous=True)
+		rospy.init_node('[INFO] Preview Node', anonymous=True)
 
 		rospy.on_shutdown(self.shutdown)
 
@@ -99,7 +99,7 @@ class preview_node:
 
 	def shutdown(self):
 		try:
-			rospy.loginfo("preview_node [OFFLINE]...")
+			rospy.loginfo("[INFO] Preview Node [OFFLINE]...")
 
 		finally:
 			cv2.destroyAllWindows()
@@ -108,15 +108,15 @@ def usage():
     print("%s" % sys.argv[0])
 
 def main(args):
-	vn = preview_node()
+	vn = PreviewNode()
 
 	try:
 		rospy.spin()
 	except KeyboardInterrupt:
-		rospy.loginfo("preview_node [OFFLINE]...")
+		rospy.loginfo("[INFO] Preview Node [OFFLINE]...")
 
 	cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-	rospy.loginfo("preview_node [ONLINE]...")
+	rospy.loginfo("[INFO] Preview Node [ONLINE]...")
 	main(sys.argv)
