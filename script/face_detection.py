@@ -22,7 +22,7 @@ class FaceDetector:
 
 	def __init__(self):
 		# Initializing your ROS Node
-		rospy.init_node("face_detector_node", anonymous=True)
+		rospy.init_node("Face_Detector_Node", anonymous=True)
 
 		rospy.on_shutdown(self.shutdown)
 
@@ -115,7 +115,7 @@ class FaceDetector:
 
 	def shutdown(self):
 		try:
-			rospy.loginfo("[INFO] Face Detector [OFFLINE]")
+			rospy.loginfo("[INFO] Face Detector Node [OFFLINE]")
 		finally:
 			cv2.destroyAllWindows()
 
@@ -124,10 +124,10 @@ def main(args):
 	try:
 		rospy.spin()
 	except ROSInterruptException:
-		rospy.loginfo("[INFO] Face Detector [OFFLINE]")
+		rospy.loginfo("[INFO] Face Detector Node [OFFLINE]")
 
 	cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-	rospy.loginfo("[INFO] Face Detector [ONLINE]")
+	rospy.loginfo("[INFO] Face Detector Node [ONLINE]")
 	main(sys.argv)

@@ -16,38 +16,35 @@ import numpy as np
 from std_msgs.msg import String
 
 from Adafruit_AMG88xx import Adafruit_AMG88xx
-from time import sleep
 
-sensor = Adafruit_AMG88xx()
-
-#wait for it to boot
-sleep(.1)
-
-while(1):
-	print (sensor.readPixels())
-	sleep(1)
-
-class TempDetector:
+class PixelTest:
 
 	def __init__(self):
 		# Initializing your ROS Node
-		rospy.init_node("face_detector_node", anonymous=True)
+		rospy.init_node("Pixel_Test_Node", anonymous=True)
 
 		rospy.on_shutdown(self.shutdown)
 
-		# Create the cv_bridge object
-		self.bridge = CvBridge()
+		# Create the Adafruit_AMG88xx object
+		self.sensor = Adafruit_AMG88xx()
 
-		# Create the Subsciber (image_raw)
-		self.sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", 
-				CompressedImage, self.callback, queue_size=1)
+#		# Create the Subsciber (image_raw)
+#		self.sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", 
+#				CompressedImage, self.callback, queue_size=1)
 
-		# Create the Publisher (roi)		
-		self.pub = rospy.Publisher("/roi", RegionOfInterest, queue_size=10)
+#		# Create the Publisher (roi)		
+#		self.pub = rospy.Publisher("/roi", RegionOfInterest, queue_size=10)
 
-		# Path to input Haar cascade for face detection
-		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library/haarcascade_frontalface_default.xml")
-		
+#		# Path to input Haar cascade for face detection
+#		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library/haarcascade_frontalface_default.xml")
+
+		# 
+		self.test_pixel()
+
+	#
+	def test_pixel(self):
+		print(self.sensor.readPixels())
+
 	# Get the width and height of the image
 	def getCameraInfo(self):
 		self.image_width = rospy.get_param("/raspicam_node_robot/width") 
@@ -124,19 +121,19 @@ class TempDetector:
 
 	def shutdown(self):
 		try:
-			rospy.loginfo("[INFO] Tank Face Detector [OFFLINE]")
+			rospy.loginfo("[INFO] Pixel Test Node [OFFLINE]")
 		finally:
 			cv2.destroyAllWindows()
 
 def main(args):
-	tfd = TempDetector()
+	tfd = PixelTest()
 	try:
 		rospy.spin()
 	except ROSInterruptException:
-		rospy.loginfo("[INFO] Tank Face Detector [OFFLINE]")
+		rospy.loginfo("[INFO] Pixel Test Node [OFFLINE]")
 
 	cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-	rospy.loginfo("[INFO] Tank Face Detector [ONLINE]")
+	rospy.loginfo("[INFO] Pixel Test Node [ONLINE]")
 	main(sys.argv)

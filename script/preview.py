@@ -18,11 +18,11 @@ import numpy as np
 
 import cv2
 
-class PreviewNode:
+class Preview:
 	def __init__(self):
 
 		# Initializing your ROS Node
-		rospy.init_node('PreviewNode', anonymous=True)
+		rospy.init_node('Preview_Node', anonymous=True)
 
 		rospy.on_shutdown(self.shutdown)
 
@@ -108,7 +108,7 @@ def usage():
     print("%s" % sys.argv[0])
 
 def main(args):
-	vn = PreviewNode()
+	vn = Preview()
 
 	try:
 		rospy.spin()
