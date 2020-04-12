@@ -44,37 +44,41 @@ class FaceDetector:
 		self.image_height = rospy.get_param("/raspicam_node_robot/height") 
 		rospy.set_param("/raspicam_node_robot/brightness", 1000)
 	
-	def callback_image(self, data):
-		# Convert ros --> opencv
-		self.convert_ros_to_opencv_img(data)
+	def callback(self,data):
+		# Convert the raw image to OpenCV format
+		self.cvtImage(data)
 
 		# Get the width and height of the image
 		self.getCameraInfo()
 
+		# Overlay some text onto the image display
+		#self.textInfo()
+
+		# Refresh the image on the screen
+		self.displayImg()
+
 		# Detect face
 		self.track()
 
-		# loop over the face bounding boxes and draw them
-		for rect in self.rects:
-			cv2.rectangle(self.frameClone, (rect[0], rect[1]), 
-					(rect[2], rect[3]), (0, 255, 0), 2)
+		# Publish ROI
+		self.publishROI()
 
-			roi=RegionOfInterest()
-			roi.x_offset=rect[0]
-			roi.y_offset=rect[1]
-			roi.width=rect[2]
-			roi.height=rect[3]
+	# Convert the raw image to OpenCV format
+	def cvtImage(self, data):
+		try:
+			# Convert the raw image to OpenCV format """
+			# self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
 
-			self.pub.publish(roi)
+			# direct conversion to CV2 ####
+			self.cv_image = np.fromstring(data.data, np.uint8)
+			self.cv_image = cv2.imdecode(self.cv_image, cv2.IMREAD_COLOR)
 
-		cv2.imshow("Face Detector", self.frameClone)
-		cv2.waitKey(1)
-	
-	def convert_ros_to_opencv_img(self, ros_image):
-		self.cv_image = self.bridge.imgmsg_to_cv2(ros_image)
-		
-		# Clone the original image for displaying purpose later
-		self.frameClone = self.cv_image.copy()
+			# OTIONAL -- image-rotate """
+			self.cv_image = imutils.rotate(self.cv_image, angle=-90)
+			self.cv_image_copy = self.cv_image.copy()
+
+		except CvBridgeError as e:
+			print(e)
 
 	def track(self):
 		# Create an empty arrays for save rects value later
@@ -90,6 +94,25 @@ class FaceDetector:
 			# Extract the face ROI and update the list of bounding boxes
 			faceROI = self.cv_image[fY:fY + fH, fX:fX + fW]
 			self.rects.append((fX, fY, fX + fW, fY + fH))
+
+	def publishROI(self):
+		# loop over the face bounding boxes and draw them
+		for rect in self.rects:
+			cv2.rectangle(self.frameClone, (rect[0], rect[1]), 
+					(rect[2], rect[3]), (0, 255, 0), 2)
+
+			roi=RegionOfInterest()
+			roi.x_offset=rect[0]
+			roi.y_offset=rect[1]
+			roi.width=rect[2]
+			roi.height=rect[3]
+
+			self.pub.publish(roi)
+
+	# Refresh the image on the screen
+	def displayImg(self):
+		cv2.imshow("Face Detector", self.frameClone)
+		cv2.waitKey(1)
 
 	def shutdown(self):
 		try:
