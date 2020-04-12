@@ -22,7 +22,7 @@ class PreviewNode:
 	def __init__(self):
 
 		# Initializing your ROS Node
-		rospy.init_node('[INFO] Preview Node', anonymous=True)
+		rospy.init_node('PreviewNode', anonymous=True)
 
 		rospy.on_shutdown(self.shutdown)
 
