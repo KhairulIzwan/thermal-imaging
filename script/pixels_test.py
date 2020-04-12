@@ -35,9 +35,6 @@ class PixelTest:
 #		# Create the Publisher (roi)		
 #		self.pub = rospy.Publisher("/roi", RegionOfInterest, queue_size=10)
 
-#		# Path to input Haar cascade for face detection
-#		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library/haarcascade_frontalface_default.xml")
-
 		# 
 		self.test_pixel()
 
@@ -128,6 +125,7 @@ class PixelTest:
 def main(args):
 	tfd = PixelTest()
 	try:
+		tfd.test_pixel()
 		rospy.spin()
 	except ROSInterruptException:
 		rospy.loginfo("[INFO] Pixel Test Node [OFFLINE]")
