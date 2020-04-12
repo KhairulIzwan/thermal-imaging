@@ -138,9 +138,9 @@ if __name__=='__main__':
 	rospy.init_node("Pixel_Test_Node", anonymous=True)
 
 	# Create the Adafruit_AMG88xx object
-	self.sensor = Adafruit_AMG88xx()
+	sensor = Adafruit_AMG88xx()
 
 	rate=rospy.Rate(10)
  
 	while not rospy.is_shutdown():
-		print(self.sensor.readPixels())
+		print(sensor.readPixels())
