@@ -74,6 +74,7 @@ class FaceDetector:
 
 			# OTIONAL -- image-rotate """
 			self.cv_image = imutils.rotate(self.cv_image, angle=-90)
+			self.cv_image = cv2.flip(self.cv_image, 1)
 
 			# Clone the original image for displaying purpose later
 			self.frameClone = self.cv_image.copy()
