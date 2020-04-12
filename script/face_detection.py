@@ -52,17 +52,23 @@ class FaceDetector:
 		# Get the width and height of the image
 		self.getCameraInfo()
 
-		# Overlay some text onto the image display
-		#self.textInfo()
-
 		# Detect face
 		self.track()
 
+		# loop over the face bounding boxes and draw them
+		for rect in self.rects:
+			cv2.rectangle(self.frameClone, (rect[0], rect[1]), (rect[2], rect[3]), (0, 255, 0), 2)
+
+			roi=RegionOfInterest()
+			roi.x_offset=rect[0]
+			roi.y_offset=rect[1]
+			roi.width=rect[2]
+			roi.height=rect[3]
+
+			self.pub.publish(roi)
+
 		# Refresh the image on the screen
 		self.displayImg()
-
-		# Publish ROI
-		self.publishROI()
 
 	# Convert the raw image to OpenCV format
 	def cvtImage(self, data):
