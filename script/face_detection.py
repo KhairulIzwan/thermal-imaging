@@ -44,7 +44,7 @@ class FaceDetector:
 		self.image_width = rospy.get_param("/raspicam_node_robot/width") 
 		self.image_height = rospy.get_param("/raspicam_node_robot/height") 
 		rospy.set_param("/raspicam_node_robot/brightness", 100)
-		rospy.set_param("/raspicam_node_robot/hFlip", True)
+		rospy.set_param("/raspicam_node_robot/hFlip", False)
 	
 	def callback(self,data):
 		# Convert the raw image to OpenCV format
