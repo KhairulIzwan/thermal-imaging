@@ -13,7 +13,7 @@ import argparse
 
 #remove or add the message type
 from std_msgs.msg import String
-from sensor_msgs.msg import Image, CameraInfo
+from sensor_msgs.msg import Image, CameraInfo, CompressedImage
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import RegionOfInterest
 
