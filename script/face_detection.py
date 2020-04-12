@@ -55,17 +55,8 @@ class FaceDetector:
 		# Detect face
 		self.track()
 
-		# loop over the face bounding boxes and draw them
-		for rect in self.rects:
-			cv2.rectangle(self.frameClone, (rect[0], rect[1]), (rect[2], rect[3]), (0, 255, 0), 2)
-
-			roi=RegionOfInterest()
-			roi.x_offset=rect[0]
-			roi.y_offset=rect[1]
-			roi.width=rect[2]
-			roi.height=rect[3]
-
-			self.pub.publish(roi)
+		# Publish ROI
+		self.publishROI()
 
 		# Refresh the image on the screen
 		self.displayImg()
@@ -103,6 +94,19 @@ class FaceDetector:
 			# Extract the face ROI and update the list of bounding boxes
 			faceROI = self.cv_image[fY:fY + fH, fX:fX + fW]
 			self.rects.append((fX, fY, fX + fW, fY + fH))
+
+	def publishROI(self):
+		# loop over the face bounding boxes and draw them
+		for rect in self.rects:
+			cv2.rectangle(self.frameClone, (rect[0], rect[1]), (rect[2], rect[3]), (0, 255, 0), 2)
+
+			roi=RegionOfInterest()
+			roi.x_offset=rect[0]
+			roi.y_offset=rect[1]
+			roi.width=rect[2]
+			roi.height=rect[3]
+
+			self.pub.publish(roi)
 
 	# Refresh the image on the screen
 	def displayImg(self):
