@@ -99,7 +99,7 @@ class FaceDetector:
 	def publishROI(self):
 		# loop over the face bounding boxes and draw them
 		for rect in self.rects:
-			cv2.rectangle(self.frameClone, (rect[0], rect[1]), 
+			cv2.rectangle(self.cv_image_copy, (rect[0], rect[1]), 
 					(rect[2], rect[3]), (0, 255, 0), 2)
 
 			roi=RegionOfInterest()
@@ -112,7 +112,7 @@ class FaceDetector:
 
 	# Refresh the image on the screen
 	def displayImg(self):
-		cv2.imshow("Face Detector", self.frameClone)
+		cv2.imshow("Face Detector", self.cv_image_copy)
 		cv2.waitKey(1)
 
 	def shutdown(self):
