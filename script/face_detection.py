@@ -10,6 +10,7 @@ import sys
 import cv2
 import imutils
 import argparse
+import numpy as np
 
 #remove or add the message type
 from std_msgs.msg import String
