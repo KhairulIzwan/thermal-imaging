@@ -1,44 +1,147 @@
-#!/usr/bin/python
-# Copyright (c) 2017 Adafruit Industries
-# Author: Dean Miller
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+#!/usr/bin/env python
 
-# Can enable debug output by uncommenting:
-#import logging
-#logging.basicConfig(level=logging.DEBUG)
+#Title: Python Subscriber for Tank Navigation
+#Author: Khairul Izwan Bin Kamsani - [23-01-2020]
+#Description: Tank Navigation Subcriber Nodes (Python)
+
+#remove or add the library/libraries for ROS
+import rospy
+import sys
+import cv2
+import imutils
+import argparse
+import numpy as np
+
+#remove or add the message type
+from std_msgs.msg import String
 
 from Adafruit_AMG88xx import Adafruit_AMG88xx
 
-#import Adafruit_AMG88xx.Adafruit_AMG88xx as AMG88
+#class PixelTest:
 
-# Default constructor will pick a default I2C bus.
-#
-# For the Raspberry Pi this means you should hook up to the only exposed I2C bus
-# from the main GPIO header and the library will figure out the bus number based
-# on the Pi's revision.
-#
-# For the Beaglebone Black the library will assume bus 1 by default, which is
-# exposed with SCL = P9_19 and SDA = P9_20.
-sensor = Adafruit_AMG88xx()
+#	def __init__(self):
+#		# Initializing your ROS Node
+#		rospy.init_node("Pixel_Test_Node", anonymous=True)
 
-# Optionally you can override the bus number:
-#sensor = AMG88.Adafruit_AMG88xx(busnum=2)
+#		rospy.on_shutdown(self.shutdown)
 
-print('Thermistor Temp = {0:0.2f} *C'.format(sensor.readThermistor()))
+#		# Create the Adafruit_AMG88xx object
+#		self.sensor = Adafruit_AMG88xx()
+
+##		# Create the Subsciber (image_raw)
+##		self.sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", 
+##				CompressedImage, self.callback, queue_size=1)
+
+##		# Create the Publisher (roi)		
+##		self.pub = rospy.Publisher("/roi", RegionOfInterest, queue_size=10)
+
+#	#
+#	def test_pixel(self):
+#		print(self.sensor.readPixels())
+
+#	# Get the width and height of the image
+#	def getCameraInfo(self):
+#		self.image_width = rospy.get_param("/raspicam_node_robot/width") 
+#		self.image_height = rospy.get_param("/raspicam_node_robot/height") 
+#		rospy.set_param("/raspicam_node_robot/brightness", 1000)
+#	
+#	def callback(self,data):
+#		# Convert the raw image to OpenCV format
+#		self.cvtImage(data)
+
+#		# Get the width and height of the image
+#		self.getCameraInfo()
+
+#		# Detect face
+#		self.track()
+
+#		# Publish ROI
+#		self.publishROI()
+
+#		# Refresh the image on the screen
+#		self.displayImg()
+
+#	# Convert the raw image to OpenCV format
+#	def cvtImage(self, data):
+#		try:
+#			# Convert the raw image to OpenCV format """
+#			# self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+
+#			# direct conversion to CV2 ####
+#			self.cv_image = np.fromstring(data.data, np.uint8)
+#			self.cv_image = cv2.imdecode(self.cv_image, cv2.IMREAD_COLOR)
+
+#			# OTIONAL -- image-rotate """
+#			self.cv_image = imutils.rotate(self.cv_image, angle=-90)
+
+#			# Clone the original image for displaying purpose later
+#			self.frameClone = self.cv_image.copy()
+
+#		except CvBridgeError as e:
+#			print(e)
+
+#	def track(self):
+#		# Create an empty arrays for save rects value later
+#		self.rects = []
+#		
+#		# Detect all faces in the input frame
+#		faceRects = self.faceCascade.detectMultiScale(self.cv_image,
+#			scaleFactor = 1.1, minNeighbors = 5, minSize = (30, 30),
+#			flags = cv2.CASCADE_SCALE_IMAGE)
+
+#		# Loop over the face bounding boxes
+#		for (fX, fY, fW, fH) in faceRects:
+#			# Extract the face ROI and update the list of bounding boxes
+#			faceROI = self.cv_image[fY:fY + fH, fX:fX + fW]
+#			self.rects.append((fX, fY, fX + fW, fY + fH))
+
+#	def publishROI(self):
+#		# loop over the face bounding boxes and draw them
+#		for rect in self.rects:
+#			cv2.rectangle(self.frameClone, (rect[0], rect[1]), (rect[2], rect[3]), (0, 255, 0), 2)
+
+#			roi=RegionOfInterest()
+#			roi.x_offset=rect[0]
+#			roi.y_offset=rect[1]
+#			roi.width=rect[2]
+#			roi.height=rect[3]
+
+#			self.pub.publish(roi)
+
+#	# Refresh the image on the screen
+#	def displayImg(self):
+#		cv2.imshow("Face Detector", self.frameClone)
+#		cv2.waitKey(1)
+
+#	def shutdown(self):
+#		try:
+#			rospy.loginfo("[INFO] Pixel Test Node [OFFLINE]")
+#		finally:
+#			cv2.destroyAllWindows()
+
+#def main(args):
+#	tfd = PixelTest()
+#	try:
+#		tfd.test_pixel()
+#		rospy.spin()
+#	except ROSInterruptException:
+#		rospy.loginfo("[INFO] Pixel Test Node [OFFLINE]")
+
+#	cv2.destroyAllWindows()
+
+#if __name__ == "__main__":
+#	rospy.loginfo("[INFO] Pixel Test Node [ONLINE]")
+#	main(sys.argv)
+
+if __name__=='__main__':
+	# Initializing your ROS Node
+	rospy.init_node("Pixel_Test_Node", anonymous=True)
+
+	# Create the Adafruit_AMG88xx object
+	sensor = Adafruit_AMG88xx()
+
+	rate=rospy.Rate(10)
+ 
+	while not rospy.is_shutdown():
+		print('Thermistor Temp = {0:0.2f} *C'.format(
+			sensor.readThermistor()))
