@@ -1,14 +1,15 @@
 raspicam_node_robot:
-  ISO: 1600
+  ISO: 889
   awb_mode: auto
-  brightness: 50
+  brightness: 59
   contrast: 50
   exposureCompensation: 0
   exposure_mode: auto
   hFlip: false
-  saturation: 0
-  sharpness: 0
-  shutterSpeed: 100000
+  saturation: 83
+  sharpness: 39
+  shutterSpeed: 25000
   vFlip: true
   videoStabilisation: false
   zoom: 1.0
+
