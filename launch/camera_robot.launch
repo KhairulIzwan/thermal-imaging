@@ -6,7 +6,7 @@
 		type="raspicam_node" 
 		output="screen">
 
-		<rosparam command="load" file="$(find thermal-imaging)/calibration/camera_calibration/raspicam.yaml" />
+		<rosparam command="load" file="$(find thermal-imaging)/calibration/camera_calibration/camera.yaml" />
 		<param name="framerate" value="90" />
 		<param name="camera_frame_id" value="0" />
 		<param name="width" value="320" />
