@@ -16,8 +16,6 @@ from cv_bridge import CvBridgeError
 
 import numpy as np
 
-import cv2
-
 class Preview:
 	def __init__(self):
 
@@ -53,9 +51,6 @@ class Preview:
 	def getCameraInfo(self):
 		self.image_width = rospy.get_param("/raspicam_node_robot/width") 
 		self.image_height = rospy.get_param("/raspicam_node_robot/height") 
-		rospy.set_param("~brightness", 50)
-		rospy.set_param("/raspicam_node_robot/hFlip", False)
-		rospy.set_param("/raspicam_node_robot/vFlip", True)
 
 	# Convert the raw image to OpenCV format
 	def cvtImage(self, data):
@@ -69,7 +64,6 @@ class Preview:
 
 			# OTIONAL -- image-rotate """
 			self.cv_image = imutils.rotate(self.cv_image, angle=-90)
-			self.cv_image_copy = cv2.flip(self.cv_image, 0)
 			self.cv_image_copy = self.cv_image.copy()
 
 		except CvBridgeError as e:
@@ -92,8 +86,10 @@ class Preview:
 		text1 = "(%d, %d)" % (self.image_width, self.image_height)
 		org1 = (3, self.image_height - 55)
 
-		cv2.putText(img, text, org, fontFace, fontScale, color, thickness, lineType, bottomLeftOrigin)
-		cv2.putText(img, text1, org1, fontFace, fontScale, color, thickness, lineType, bottomLeftOrigin)
+		cv2.putText(img, text, org, fontFace, fontScale, color, 
+					thickness, lineType, bottomLeftOrigin)
+		cv2.putText(img, text1, org1, fontFace, fontScale, color, 
+					thickness, lineType, bottomLeftOrigin)
 
 	# Refresh the image on the screen
 	def displayImg(self):
