@@ -37,7 +37,7 @@ class FaceDetector:
 		self.outputDir = os.path.join(self.p, "library")
 
 		self.haar_filename = self.outputDir + "/haarcascade_frontalface_default.xml"
-		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library haarcascade_frontalface_default.xml")
+		self.faceCascade = cv2.CascadeClassifier(self.haar_filename)
 
 		# Create the Subsciber (image_raw)
 		self.sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", CompressedImage)
