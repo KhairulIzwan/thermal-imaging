@@ -60,8 +60,8 @@ class FaceDetector:
 		self.cv_image = cv2.imdecode(self.cv_image, cv2.IMREAD_COLOR)
 
 		# OPTIONAL -- image-rotate """
-#		self.cv_image = imutils.rotate(self.cv_image, angle=-90)
-#		self.cv_image = cv2.flip(self.cv_image, 0)
+		self.cv_image = imutils.rotate(self.cv_image, angle=-90)
+		self.cv_image = cv2.flip(self.cv_image, 1)
 
 		# Clone the original image for displaying purpose later
 		self.frameClone = self.cv_image.copy()
