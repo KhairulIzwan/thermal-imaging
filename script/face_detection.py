@@ -38,7 +38,7 @@ class FaceDetector:
 		# Path to input Haar cascade for face detection
 		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library haarcascade_frontalface_default.xml")
 
-		self.displayImg()
+		self.dispImage()
 
 	# Get the image raw
 	def getImage(self):
@@ -66,12 +66,26 @@ class FaceDetector:
 		# Clone the original image for displaying purpose later
 		self.frameClone = self.cv_image.copy()
 
+	def track(self):
+		# Create an empty arrays for save rects value later
+		self.rects = []
+		
+		# Detect all faces in the input frame
+		faceRects = self.faceCascade.detectMultiScale(self.cv_image, scaleFactor = 1.1, minNeighbors = 5, minSize = (30, 30), flags = cv2.CASCADE_SCALE_IMAGE)
+
+		# Loop over the face bounding boxes
+		for (fX, fY, fW, fH) in faceRects:
+			# Extract the face ROI and update the list of bounding boxes
+			faceROI = self.cv_image[fY:fY + fH, fX:fX + fW]
+			self.rects.append((fX, fY, fX + fW, fY + fH))
+
 	# Refresh the image on the screen
-	def displayImg(self):
+	def dispImage(self):
 		while not rospy.is_shutdown():
 			try:
 				# Get the scan-ed data
 				self.cvtImage()
+				self.track()
 
 				cv2.imshow("Face Detector", self.frameClone)
 				cv2.waitKey(1)
@@ -100,21 +114,6 @@ class FaceDetector:
 
 		# Refresh the image on the screen
 		self.displayImg()
-
-	def track(self):
-		# Create an empty arrays for save rects value later
-		self.rects = []
-		
-		# Detect all faces in the input frame
-		faceRects = self.faceCascade.detectMultiScale(self.cv_image,
-			scaleFactor = 1.1, minNeighbors = 5, minSize = (30, 30),
-			flags = cv2.CASCADE_SCALE_IMAGE)
-
-		# Loop over the face bounding boxes
-		for (fX, fY, fW, fH) in faceRects:
-			# Extract the face ROI and update the list of bounding boxes
-			faceROI = self.cv_image[fY:fY + fH, fX:fX + fW]
-			self.rects.append((fX, fY, fX + fW, fY + fH))
 
 	def publishROI(self):
 		# loop over the face bounding boxes and draw them
