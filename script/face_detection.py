@@ -11,6 +11,7 @@ import cv2
 import imutils
 import argparse
 import numpy as np
+import rospkg
 
 #remove or add the message type
 from std_msgs.msg import String
@@ -29,14 +30,19 @@ class FaceDetector:
 		# Create the cv_bridge object
 		self.bridge = CvBridge()
 
+		# Path to input Haar cascade for face detection
+		self.rospack = rospkg.RosPack()
+		self.p = os.path.sep.join([self.rospack.get_path('thermal-imaging')])
+		self.outputDir = os.path.join(self.p, "library")
+
+		self.haar_filename = self.outputDir + "/haarcascade_frontalface_default.xml"
+		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library haarcascade_frontalface_default.xml")
+
 		# Create the Subsciber (image_raw)
 		self.sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", CompressedImage)
 
 		# Create the Publisher (roi)		
 		self.pub = rospy.Publisher("/roi", RegionOfInterest, queue_size=10)
-
-		# Path to input Haar cascade for face detection
-		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library haarcascade_frontalface_default.xml")
 
 		self.dispImage()
 
