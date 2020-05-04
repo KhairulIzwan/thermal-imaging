@@ -30,22 +30,59 @@ class FaceDetector:
 		self.bridge = CvBridge()
 
 		# Create the Subsciber (image_raw)
-		self.sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", 
-				CompressedImage, self.callback, queue_size=1)
+		self.sub = rospy.Subscriber("/raspicam_node_robot/image/compressed", CompressedImage)
 
 		# Create the Publisher (roi)		
 		self.pub = rospy.Publisher("/roi", RegionOfInterest, queue_size=10)
 
 		# Path to input Haar cascade for face detection
-		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library/haarcascade_frontalface_default.xml")
-		
+		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library haarcascade_frontalface_default.xml")
+
+	# Get the image raw
+	def getImage(self):
+		# Wait for the topic
+		self.image = rospy.wait_for_message("/raspicam_node_robot/image/compressed", CompressedImage)
+
 	# Get the width and height of the image
 	def getCameraInfo(self):
 		self.image_width = rospy.get_param("/raspicam_node_robot/width") 
-		self.image_height = rospy.get_param("/raspicam_node_robot/height") 
-#		rospy.set_param("/raspicam_node_robot/brightness", 100)
-#		rospy.set_param("/raspicam_node_robot/hFlip", False)
-	
+		self.image_height = rospy.get_param("/raspicam_node_robot/height")
+
+	# Convert the raw image to OpenCV format
+	def cvtImage(self):
+		# Get the scan-ed data
+		self.getImage()
+
+		# direct conversion to CV2 ####
+		self.cv_image = np.fromstring(self.image.data, np.uint8)
+		self.cv_image = cv2.imdecode(self.cv_image, cv2.IMREAD_COLOR)
+
+		# OTIONAL -- image-rotate """
+		self.cv_image = imutils.rotate(self.cv_image, angle=-90)
+		self.cv_image = cv2.flip(self.cv_image, 0)
+
+		# Clone the original image for displaying purpose later
+		self.frameClone = self.cv_image.copy()
+
+	# Refresh the image on the screen
+	def displayImg(self):
+		while not rospy.is_shutdown():
+			try:
+				# Get the scan-ed data
+				self.cvtImage()
+
+				cv2.imshow("Face Detector", self.frameClone)
+				cv2.waitKey(1)
+
+			except CvBridgeError as e:
+				print(e)
+
+	def shutdown(self):
+		try:
+			rospy.loginfo("[INFO] Face Detector Node [OFFLINE]")
+		finally:
+			cv2.destroyAllWindows()
+
 	def callback(self,data):
 		# Convert the raw image to OpenCV format
 		self.cvtImage(data)
@@ -61,26 +98,6 @@ class FaceDetector:
 
 		# Refresh the image on the screen
 		self.displayImg()
-
-	# Convert the raw image to OpenCV format
-	def cvtImage(self, data):
-		try:
-			# Convert the raw image to OpenCV format """
-			# self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-
-			# direct conversion to CV2 ####
-			self.cv_image = np.fromstring(data.data, np.uint8)
-			self.cv_image = cv2.imdecode(self.cv_image, cv2.IMREAD_COLOR)
-
-			# OTIONAL -- image-rotate """
-			self.cv_image = imutils.rotate(self.cv_image, angle=-90)
-			self.cv_image = cv2.flip(self.cv_image, 0)
-
-			# Clone the original image for displaying purpose later
-			self.frameClone = self.cv_image.copy()
-
-		except CvBridgeError as e:
-			print(e)
 
 	def track(self):
 		# Create an empty arrays for save rects value later
@@ -109,17 +126,6 @@ class FaceDetector:
 			roi.height=rect[3]
 
 			self.pub.publish(roi)
-
-	# Refresh the image on the screen
-	def displayImg(self):
-		cv2.imshow("Face Detector", self.frameClone)
-		cv2.waitKey(1)
-
-	def shutdown(self):
-		try:
-			rospy.loginfo("[INFO] Face Detector Node [OFFLINE]")
-		finally:
-			cv2.destroyAllWindows()
 
 def main(args):
 	tfd = FaceDetector()
