@@ -86,42 +86,6 @@ class FaceDetector:
 			faceROI = self.cv_image[fY:fY + fH, fX:fX + fW]
 			self.rects.append((fX, fY, fX + fW, fY + fH))
 
-	# Refresh the image on the screen
-	def dispImage(self):
-		while not rospy.is_shutdown():
-			try:
-				# Get the scan-ed data
-				self.cvtImage()
-				self.track()
-
-				cv2.imshow("Face Detector", self.frameClone)
-				cv2.waitKey(1)
-
-			except CvBridgeError as e:
-				print(e)
-
-	def shutdown(self):
-		try:
-			rospy.loginfo("[INFO] Face Detector Node [OFFLINE]")
-		finally:
-			cv2.destroyAllWindows()
-
-	def callback(self,data):
-		# Convert the raw image to OpenCV format
-		self.cvtImage(data)
-
-		# Get the width and height of the image
-		self.getCameraInfo()
-
-		# Detect face
-		self.track()
-
-		# Publish ROI
-		self.publishROI()
-
-		# Refresh the image on the screen
-		self.displayImg()
-
 	def publishROI(self):
 		# loop over the face bounding boxes and draw them
 		for rect in self.rects:
@@ -134,6 +98,27 @@ class FaceDetector:
 			roi.height=rect[3]
 
 			self.pub.publish(roi)
+
+	# Refresh the image on the screen
+	def dispImage(self):
+		while not rospy.is_shutdown():
+			try:
+				# Get the scan-ed data
+				self.cvtImage()
+				self.track()
+				self.publishROI()
+
+				cv2.imshow("Face Detector", self.frameClone)
+				cv2.waitKey(1)
+
+			except CvBridgeError as e:
+				print(e)
+
+	def shutdown(self):
+		try:
+			rospy.loginfo("[INFO] Face Detector Node [OFFLINE]")
+		finally:
+			cv2.destroyAllWindows()
 
 def main(args):
 	tfd = FaceDetector()
