@@ -38,6 +38,8 @@ class FaceDetector:
 		# Path to input Haar cascade for face detection
 		self.faceCascade = cv2.CascadeClassifier("/home/pi/catkin_ws/src/thermal-imaging/library haarcascade_frontalface_default.xml")
 
+		self.dispImage()
+
 	# Get the image raw
 	def getImage(self):
 		# Wait for the topic
