@@ -12,6 +12,7 @@ import imutils
 import argparse
 import numpy as np
 import rospkg
+import os
 
 #remove or add the message type
 from std_msgs.msg import String
