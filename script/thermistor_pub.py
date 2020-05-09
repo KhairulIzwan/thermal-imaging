@@ -44,7 +44,7 @@ class Thermistor:
 
 		# Get the thermistor temp reading
 		try:
-			thermal_temp = sensor.readThermistor()
+			thermal_temp = self.sensor.readThermistor()
 		except KeyboardInterrupt as e:
 			print(e)
 
