@@ -22,7 +22,7 @@ import imutils
 
 # import the necessary ROS packages
 from std_msgs.msg import String
-from std_msgs.msg import Int32
+from std_msgs.msg import Float64
 
 import rospy
 
@@ -35,7 +35,7 @@ class Thermistor:
 
 		# Connect image topic
 		temp_topic = "/thermistor_temp"
-		self.temp_pub = rospy.Publisher(temp_topic, Int32, queue_size=10)
+		self.temp_pub = rospy.Publisher(temp_topic, Float64, queue_size=10)
 
 		# Allow up to one second to connection
 		rospy.sleep(1)
@@ -58,7 +58,6 @@ class Thermistor:
 			# Publish Thermistor Temp reading
 			self.temp_pub.publish(self.temp)
 
-			return True
 		else:
 			rospy.logerr("No Thermistor Temp recieved")
 
