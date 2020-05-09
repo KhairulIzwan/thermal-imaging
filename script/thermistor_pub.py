@@ -35,7 +35,7 @@ class Thermistor:
 
 		# Connect image topic
 		temp_topic = "/thermistor_temp"
-		self.temp_pub = rospy.Publisher(img_topic, Int32, queue_size=10)
+		self.temp_pub = rospy.Publisher(temp_topic, Int32, queue_size=10)
 
 		# Allow up to one second to connection
 		rospy.sleep(1)
