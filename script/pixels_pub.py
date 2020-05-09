@@ -22,7 +22,7 @@ import imutils
 
 # import the necessary ROS packages
 from std_msgs.msg import String
-from thermal_imaging.msg import pixels
+from thermal_imaging.msg import Pixels
 
 import rospy
 
