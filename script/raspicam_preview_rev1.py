@@ -65,6 +65,7 @@ class RaspicamPreview:
 
 		#
 		self.readTemp()
+		self.getCameraInfo()
 
 		if self.image_received:
 			# Overlay some text onto the image display
@@ -73,7 +74,7 @@ class RaspicamPreview:
 				(10, 20), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
 				False)
 			cv2.putText(self.image, "{0:0.5f}".format(self.temp.data), 
-				(10, 60), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
+				(10, self.image_width-60), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
 				False)
 
 			# show the output frame
@@ -86,6 +87,11 @@ class RaspicamPreview:
 	def readTemp(self):
 		# Wait for the topic
 		self.temp = rospy.wait_for_message(self.temp_topic, Float64)
+
+	# Get the width and height of the image
+	def getCameraInfo(self):
+		self.image_width = rospy.get_param("/raspicam/width") 
+		self.image_height = rospy.get_param("/raspicam/height")
 
 if __name__ == '__main__':
 
