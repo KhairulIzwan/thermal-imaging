@@ -27,7 +27,7 @@ import rospy
 
 if __name__=='__main__':
 	# Initializing your ROS Node
-	rospy.init_node("Pixel_Test_Node", anonymous=True)
+	rospy.init_node("thermistor_temp", anonymous=False)
 
 	# Create the Adafruit_AMG88xx object
 	sensor = Adafruit_AMG88xx()

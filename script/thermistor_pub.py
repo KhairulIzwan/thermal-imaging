@@ -22,18 +22,49 @@ import imutils
 
 # import the necessary ROS packages
 from std_msgs.msg import String
+from std_msgs.msg import Int32
 
 import rospy
 
+class Thermistor:
+	def __init__(self):
+
+		# Create the Adafruit_AMG88xx object
+		self.sensor = Adafruit_AMG88xx()
+		self.temp_received = False
+
+		# Connect image topic
+		temp_topic = "/thermistor_temp"
+		self.temp_pub = rospy.Publisher(img_topic, Int32, queue_size=10)
+
+		# Allow up to one second to connection
+		rospy.sleep(1)
+
+	def readTemp(self):
+
+		# Get the thermistor temp reading
+		try:
+			thermal_temp = sensor.readThermistor()
+		except KeyboardInterrupt as e:
+			print(e)
+
+		self.temp_received = True
+		self.temp = thermal_temp
+
+	def pubTemp(self):
+
+		if self.temp_received:
+			# Publish Thermistor Temp reading
+			self.temp_pub.publish(self.temp)
+
+			return True
+		else:
+			rospy.logerr("No Thermistor Temp recieved")
+
 if __name__=='__main__':
 	# Initializing your ROS Node
-	rospy.init_node("Pixel_Test_Node", anonymous=True)
-
-	# Create the Adafruit_AMG88xx object
-	sensor = Adafruit_AMG88xx()
-
-	rate=rospy.Rate(10)
+	rospy.init_node("thermistor", anonymous=False)
+	thermal = Thermistor()
  
 	while not rospy.is_shutdown():
-		print('Thermistor Temp = {0:0.2f} *C'.format(
-			sensor.readThermistor()))
+		thermal.pubTemp()
