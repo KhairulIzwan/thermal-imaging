@@ -26,14 +26,45 @@ from thermal_imaging.msg import pixels
 
 import rospy
 
+class Pixels:
+	def __init__(self):
+
+		# Create the Adafruit_AMG88xx object
+		self.sensor = Adafruit_AMG88xx()
+		self.pixels_received = False
+
+		# Connect image topic
+		pixels_topic = "/thermistor_temp"
+		self.pixels_pub = rospy.Publisher(pixels_topic, Pixels, queue_size=10)
+
+		# Allow up to one second to connection
+		rospy.sleep(1)
+
+	def readPixels(self):
+
+		# Get the pixels array reading
+		try:
+			pixels_array = self.sensor.readPixels()
+		except KeyboardInterrupt as e:
+			print(e)
+
+		self.pixels_received = True
+		self.pixels = pixels_array
+
+	def pubPixels(self):
+		self.readPixels()
+
+		if self.pixels_received:
+			# Publish pixels array reading
+			self.pixels_pub.publish(self.temp)
+
+		else:
+			rospy.logerr("No Pixels reading recieved")
+
 if __name__=='__main__':
 	# Initializing your ROS Node
-	rospy.init_node("Pixel_Test_Node", anonymous=True)
+	rospy.init_node("pixels", anonymous=False)
+ 	pixels = Pixels()
 
-	# Create the Adafruit_AMG88xx object
-	sensor = Adafruit_AMG88xx()
-
-	rate=rospy.Rate(10)
- 
 	while not rospy.is_shutdown():
-		print(sensor.readPixels())
+		print(pixels.pubPixels())
