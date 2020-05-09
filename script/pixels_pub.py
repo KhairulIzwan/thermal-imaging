@@ -56,7 +56,7 @@ class Pixels:
 
 		if self.pixels_received:
 			# Publish pixels array reading
-			self.pixels_pub.publish(self.temp)
+			self.pixels_pub.publish(self.pixels)
 
 		else:
 			rospy.logerr("No Pixels reading recieved")
