@@ -78,7 +78,7 @@ class FaceDetector:
 		self.rects = []
 		
 		# Detect all faces in the input frame
-		faceRects = self.faceCascade.detectMultiScale(self.cv_image, scaleFactor = 1.1, minNeighbors = 5, minSize = (30, 30), flags = cv2.CASCADE_SCALE_IMAGE)
+		faceRects = self.faceCascade.detectMultiScale(self.cv_image, scaleFactor = 1.1, minNeighbors = 5, minSize = (15, 15), flags = cv2.CASCADE_SCALE_IMAGE)
 
 		# Loop over the face bounding boxes
 		for (fX, fY, fW, fH) in faceRects:
