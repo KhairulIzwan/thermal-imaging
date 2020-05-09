@@ -52,6 +52,7 @@ class Thermistor:
 		self.temp = thermal_temp
 
 	def pubTemp(self):
+		self.readTemp()
 
 		if self.temp_received:
 			# Publish Thermistor Temp reading
