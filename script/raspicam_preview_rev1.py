@@ -71,10 +71,10 @@ class RaspicamPreview:
 			# Overlay some text onto the image display
 			timestr = time.strftime("%Y%m%d-%H%M%S")
 			cv2.putText(self.image, timestr, 
-				(10, 20), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
+				(10, self.image_height-20), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
 				False)
 			cv2.putText(self.image, "{0:0.5f}".format(self.temp.data), 
-				(10, self.image_width-60), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
+				(10, 20), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
 				False)
 
 			# show the output frame
