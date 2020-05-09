@@ -67,4 +67,4 @@ if __name__=='__main__':
  	pixels = Pixels()
 
 	while not rospy.is_shutdown():
-		print(pixels.pubPixels())
+		pixels.pubPixels()
