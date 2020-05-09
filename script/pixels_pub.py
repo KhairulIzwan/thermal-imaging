@@ -22,7 +22,7 @@ import imutils
 
 # import the necessary ROS packages
 from std_msgs.msg import String
-from thermal_imaging.msg import Pixels
+from thermal_imaging.msg import pixels
 
 import rospy
 
@@ -35,7 +35,7 @@ class Pixels:
 
 		# Connect image topic
 		pixels_topic = "/thermistor_temp"
-		self.pixels_pub = rospy.Publisher(pixels_topic, Pixels, queue_size=10)
+		self.pixels_pub = rospy.Publisher(pixels_topic, pixels, queue_size=10)
 
 		# Allow up to one second to connection
 		rospy.sleep(1)
