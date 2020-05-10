@@ -34,7 +34,7 @@ class Pixels:
 		self.pixels_received = False
 
 		# Connect image topic
-		pixels_topic = "/pixels"
+		pixels_topic = "/pixels_val"
 		self.pixels_pub = rospy.Publisher(pixels_topic, pixels, queue_size=10)
 
 		# Allow up to one second to connection

@@ -24,6 +24,7 @@ from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
 from cv_bridge import CvBridgeError
 from std_msgs.msg import Float64
+from thermal_imaging.msg import pixels
 
 import rospy
 
@@ -40,6 +41,10 @@ class RaspicamPreview:
 		# Connect to Thermistor Temp topic
 		self.temp_topic = "/thermistor_temp"
 		self.temp_sub = rospy.Subscriber(self.temp_topic, Float64)
+
+		# Connect to Thermistor Temp topic
+		self.pixels_topic = "/pixels_val"
+		self.pixels_sub = rospy.Subscriber(self.pixels_topic, pixels)
 
 		# Allow up to one second to connection
 		rospy.sleep(1)
@@ -65,6 +70,7 @@ class RaspicamPreview:
 
 		#
 		self.readTemp()
+		self.readPixels()
 		self.getCameraInfo()
 
 		if self.image_received:
@@ -86,6 +92,10 @@ class RaspicamPreview:
 	def readTemp(self):
 		# Wait for the topic
 		self.temp = rospy.wait_for_message(self.temp_topic, Float64)
+
+	def readPixels(self):
+		# Wait for the topic
+		self.pixels = rospy.wait_for_message(self.pixels_topic, pixels)
 
 	# Get the width and height of the image
 	def getCameraInfo(self):
