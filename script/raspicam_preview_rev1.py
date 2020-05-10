@@ -86,6 +86,8 @@ class RaspicamPreview:
 			cv2.imshow("Frame", self.image)
 			cv2.waitKey(1)
 
+			rospy.logwarn(self.pixels)
+
 		else:
 			rospy.logerr("No images recieved")
 
