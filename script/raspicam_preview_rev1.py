@@ -81,12 +81,15 @@ class RaspicamPreview:
 			cv2.putText(self.image, "{0:0.5f}".format(self.temp.data), 
 				(10, 20), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
 				False)
+			cv2.putText(self.image, "{}, {}".format(self.image_width, self.image_height), 
+				(self.image_width-80, 20), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
+				False)
 
 			# show the output frame
 			cv2.imshow("Frame", self.image)
 			cv2.waitKey(1)
 
-			rospy.logwarn(self.pixels)
+			rospy.logwarn(self.pixels.data[0])
 
 		else:
 			rospy.logerr("No images recieved")
