@@ -47,6 +47,10 @@ class Thermal:
 		rospy.sleep(1)
 
 	def readThermal(self):
+		self.getCameraInfo()
+
+		displayPixelWidth = self.image_width / 30
+		displayPixelHeight = self.image_height / 30
 
 		# Get the pixels array reading
 		try:
@@ -54,6 +58,11 @@ class Thermal:
 
 			#perdorm interpolation
 			bicubic = griddata(self.points, pixels_array, (self.grid_x, self.grid_y), method='cubic')
+
+			# TODO:
+			for ix, row in enumerate(bicubic):
+					for jx, pixel in enumerate(row):
+						rospy.loginfo("{}, {}, {}, {}".format(pixel, displayPixelHeight * ix, displayPixelWidth * jx, displayPixelHeight, displayPixelWidth))
 
 		except KeyboardInterrupt as e:
 			print(e)
@@ -71,6 +80,11 @@ class Thermal:
 
 		else:
 			rospy.logerr("No Thermal reading recieved")
+
+	# Get the width and height of the image
+	def getCameraInfo(self):
+		self.image_width = rospy.get_param("/raspicam/width") 
+		self.image_height = rospy.get_param("/raspicam/height")
 
 if __name__=='__main__':
 	# Initializing your ROS Node
