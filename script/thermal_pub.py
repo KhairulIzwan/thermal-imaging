@@ -92,4 +92,4 @@ if __name__=='__main__':
  	thermal = Thermal()
 
 	while not rospy.is_shutdown():
-		thermal.pubThermal()
+		thermal.readThermal()
