@@ -17,6 +17,9 @@ import cv2
 import time
 import numpy as np
 import imutils
+import os
+import dlib
+from imutils import face_utils
 
 # import the necessary ROS packages
 from std_msgs.msg import String
@@ -24,15 +27,29 @@ from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
 from cv_bridge import CvBridgeError
 from std_msgs.msg import Float64
+
 from thermal_imaging.msg import pixels
 
 import rospy
+import rospkg
 
 class RaspicamPreview:
 	def __init__(self):
 
 		self.bridge = CvBridge()
 		self.image_received = False
+
+		self.rospack = rospkg.RosPack()
+		self.p = os.path.sep.join([self.rospack.get_path('common_face_application')])
+		self.libraryDir = os.path.join(self.p, "library")
+
+		self.dlib_filename = self.libraryDir + "/shape_predictor_68_face_landmarks.dat"
+
+		# initialize dlib's face detector (HOG-based) and then create 
+		# the facial landmark predictor
+		rospy.loginfo("Loading facial landmark predictor...")
+		self.detector = dlib.get_frontal_face_detector()
+		self.predictor = dlib.shape_predictor(self.dlib_filename)
 
 		# Connect image topic
 		img_topic = "/raspicam/image/compressed"
@@ -74,6 +91,9 @@ class RaspicamPreview:
 		self.getCameraInfo()
 
 		if self.image_received:
+			#
+			self.detectFacialLandmark()
+
 			# Overlay some text onto the image display
 			timestr = time.strftime("%Y%m%d-%H%M%S")
 			cv2.putText(self.image, timestr, (10, self.image_height-20), 
@@ -106,6 +126,34 @@ class RaspicamPreview:
 	def getCameraInfo(self):
 		self.image_width = rospy.get_param("/raspicam/width") 
 		self.image_height = rospy.get_param("/raspicam/height")
+
+	def detectFacialLandmark(self):
+		gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+
+		# detect faces in the grayscale frame
+		rects = self.detector(gray, 0)
+
+		# loop over the face detections
+		for (i, rect) in enumerate(rects):
+			# determine the facial landmarks for the face region, then
+			# convert the facial landmark (x, y)-coordinates to a NumPy
+			# array
+			shape = self.predictor(gray, rect)
+			shape = face_utils.shape_to_np(shape)
+
+			# convert dlib's rectangle to a OpenCV-style bounding box
+			# [i.e., (x, y, w, h)], then draw the face bounding box
+			(x, y, w, h) = face_utils.rect_to_bb(rect)
+			cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+			# show the face number
+			cv2.putText(self.image, "Face #{}".format(i + 1), (x - 10, y - 10),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+#			# loop over the (x, y)-coordinates for the facial landmarks
+#			# and draw them on the image
+#			for (x, y) in shape:
+#				cv2.circle(self.image, (x, y), 1, (0, 0, 255), -1)
 
 if __name__ == '__main__':
 

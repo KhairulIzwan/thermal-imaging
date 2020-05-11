@@ -28,8 +28,8 @@ points = [(math.floor(ix / 8), (ix % 8)) for ix in range(0, 64)]
 grid_x, grid_y = np.mgrid[0:7:32j, 0:7:32j]
 
 #sensor is an 8x8 grid so lets do a square
-height = 480
-width = 480
+height = 240
+width = 240
 
 #the list of colors we can choose from
 blue = Color("indigo")
