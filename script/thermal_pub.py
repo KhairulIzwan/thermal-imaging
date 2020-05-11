@@ -66,7 +66,8 @@ class Thermal:
 
 		if self.thermal_received:
 			# Publish thermal array reading
-			self.thermal_pub.publish(self.thermal)
+#			self.thermal_pub.publish(self.thermal)
+			rospy.loginfo(self.thermal)
 
 		else:
 			rospy.logerr("No Thermal reading recieved")
