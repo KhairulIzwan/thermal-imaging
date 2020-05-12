@@ -52,8 +52,6 @@ class Thermal:
 		displayPixelWidth = self.image_width / 30
 		displayPixelHeight = self.image_height / 30
 
-		print("*" * 50)
-
 		# Get the pixels array reading
 		try:
 			pixels_array = self.sensor.readPixels()
@@ -63,6 +61,7 @@ class Thermal:
 
 			# TODO:
 			for ix, row in enumerate(bicubic):
+				print("*" * 50)
 					for jx, pixel in enumerate(row):
 						rospy.loginfo("{}, {}, {}, {}, {}".format(pixel, displayPixelHeight * ix, displayPixelWidth * jx, displayPixelHeight, displayPixelWidth))
 
