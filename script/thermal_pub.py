@@ -52,6 +52,8 @@ class Thermal:
 		displayPixelWidth = self.image_width / 30
 		displayPixelHeight = self.image_height / 30
 
+		thermal_array = np.zeros((self.image_width, self.image_height))
+
 		# Get the pixels array reading
 		try:
 			pixels_array = self.sensor.readPixels()
@@ -64,12 +66,13 @@ class Thermal:
 				print("*" * 50)
 				for jx, pixel in enumerate(row):
 					rospy.loginfo("{}, {}, {}, {}, {}".format(pixel, displayPixelHeight * ix, displayPixelWidth * jx, displayPixelHeight, displayPixelWidth))
+					thermal_array[displayPixelHeight * ix, displayPixelWidth * jx] = pixel
 
 		except KeyboardInterrupt as e:
 			print(e)
 
 		self.thermal_received = True
-		self.thermal = bicubic
+		self.thermal = thermal_array
 
 	def pubThermal(self):
 		self.readThermal()
