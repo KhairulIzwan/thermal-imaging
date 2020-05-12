@@ -52,6 +52,8 @@ class Thermal:
 		displayPixelWidth = self.image_width / 30
 		displayPixelHeight = self.image_height / 30
 
+		print("*" * 50)
+
 		# Get the pixels array reading
 		try:
 			pixels_array = self.sensor.readPixels()
