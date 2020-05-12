@@ -66,7 +66,7 @@ class Thermal:
 				print("*" * 50)
 				for jx, pixel in enumerate(row):
 					rospy.loginfo("{}, {}, {}, {}, {}".format(pixel, displayPixelHeight * ix, displayPixelWidth * jx, displayPixelHeight, displayPixelWidth))
-					thermal_array[displayPixelHeight * ix, displayPixelWidth * jx] = pixel
+					#thermal_array[displayPixelHeight * ix, displayPixelWidth * jx] = pixel
 
 		except KeyboardInterrupt as e:
 			print(e)
