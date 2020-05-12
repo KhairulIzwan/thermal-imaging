@@ -62,8 +62,8 @@ class Thermal:
 			# TODO:
 			for ix, row in enumerate(bicubic):
 				print("*" * 50)
-					for jx, pixel in enumerate(row):
-						rospy.loginfo("{}, {}, {}, {}, {}".format(pixel, displayPixelHeight * ix, displayPixelWidth * jx, displayPixelHeight, displayPixelWidth))
+				for jx, pixel in enumerate(row):
+					rospy.loginfo("{}, {}, {}, {}, {}".format(pixel, displayPixelHeight * ix, displayPixelWidth * jx, displayPixelHeight, displayPixelWidth))
 
 		except KeyboardInterrupt as e:
 			print(e)
