@@ -20,6 +20,9 @@ import imutils
 import os
 import dlib
 from imutils import face_utils
+import math
+
+from scipy.interpolate import griddata
 
 # import the necessary ROS packages
 from std_msgs.msg import String
@@ -50,6 +53,9 @@ class RaspicamPreview:
 		rospy.loginfo("Loading facial landmark predictor...")
 		self.detector = dlib.get_frontal_face_detector()
 		self.predictor = dlib.shape_predictor(self.dlib_filename)
+
+		self.points = [(math.floor(ix / 8), (ix % 8)) for ix in range(0, 64)]
+		self.grid_x, self.grid_y = np.mgrid[0:7:32j, 0:7:32j]
 
 		# Connect image topic
 		img_topic = "/raspicam/image/compressed"
@@ -95,10 +101,10 @@ class RaspicamPreview:
 			self.detectFacialLandmark()
 
 			# Overlay some text onto the image display
-			timestr = time.strftime("%Y%m%d-%H%M%S")
-			cv2.putText(self.image, timestr, (10, self.image_height-20), 
-				1, 1, (255, 255, 255), 1, cv2.LINE_AA, False)
-			cv2.putText(self.image, "{0:0.2f}".format(self.temp.data), 
+#			timestr = time.strftime("%Y%m%d-%H%M%S")
+#			cv2.putText(self.image, timestr, (10, self.image_height-20), 
+#				1, 1, (255, 255, 255), 1, cv2.LINE_AA, False)
+			cv2.putText(self.image, "{0:0.2f}".format(self.room_temp), 
 				(10, 20), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
 				False)
 #			cv2.putText(self.image, "{}, {}".format(self.image_width, self.image_height), 
@@ -109,18 +115,32 @@ class RaspicamPreview:
 			cv2.imshow("Frame", self.image)
 			cv2.waitKey(1)
 
-			rospy.logwarn(self.pixels.data[0])
-
 		else:
 			rospy.logerr("No images recieved")
 
 	def readTemp(self):
 		# Wait for the topic
 		self.temp = rospy.wait_for_message(self.temp_topic, Float64)
+		self.room_temp = self.temp.data
 
 	def readPixels(self):
+		self.getCameraInfo()
+
+		displayPixelWidth = self.image_width / 30
+		displayPixelHeight = self.image_height / 30
+
+		thermal_array = np.zeros((self.image_width + 100, self.image_height + 100))
+
 		# Wait for the topic
-		self.pixels = rospy.wait_for_message(self.pixels_topic, pixels)
+		self.pixels_temp = rospy.wait_for_message(self.pixels_topic, pixels)
+
+		#perdorm interpolation
+		bicubic = griddata(self.points, self.pixels_temp.data, (self.grid_x, self.grid_y), method='cubic')
+
+		for ix, row in enumerate(bicubic):
+			for jx, pixel in enumerate(row):
+				#rospy.loginfo("{}, {}, {}, {}, {}".format(pixel, displayPixelHeight * ix, displayPixelWidth * jx, displayPixelHeight, displayPixelWidth))
+				thermal_array[int(displayPixelHeight * ix), int(displayPixelWidth * jx)] = pixel
 
 	# Get the width and height of the image
 	def getCameraInfo(self):
@@ -143,12 +163,19 @@ class RaspicamPreview:
 
 			# convert dlib's rectangle to a OpenCV-style bounding box
 			# [i.e., (x, y, w, h)], then draw the face bounding box
-			(x, y, w, h) = face_utils.rect_to_bb(rect)
-			cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+			(self.x, self.y, self.w, self.h) = face_utils.rect_to_bb(rect)
+			cv2.rectangle(self.image, (self.x, self.y), 
+				(self.x + self.w, self.y + self.h), (0, 255, 0), 2)
 
 			# show the face number
-			cv2.putText(self.image, "Face #{}".format(i + 1), (x - 10, y - 10),
+			cv2.putText(self.image, "Face #{}".format(i + 1), (self.x - 10, self.y - 10),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+			cv2.circle(self.image, (self.x + (self.w // 2), self.y + (self.h // 2)), 3, (0, 0, 255), -1)
+
+			cv2.putText(self.image, "{}, {}".format(self.x + (self.w // 2), self.y + (self.h // 2)), 
+				(self.image_width-80, 20), 1, 1, (255, 255, 255), 1, cv2.LINE_AA, 
+				False)
 
 #			# loop over the (x, y)-coordinates for the facial landmarks
 #			# and draw them on the image
